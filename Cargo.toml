@@ -1,6 +1,6 @@
 [package]
 name = "codex-notifier"
-version = "0.1.6"
+version = "0.1.7"
 description = "Notifier for Codex in the terminal: a push on your phone when OpenAI Codex finishes or needs you, and answers from there"
 edition = "2024"
 license-file = "LICENSE.md"
