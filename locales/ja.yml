@@ -5,7 +5,7 @@ _version: 1
 cli:
   about: "Notifier for Codex: Codex があなたを必要とするときスマートフォンにプッシュ通知を届け、その場で返答できます"
   pair:
-    about: "このコンピュータをスマートフォンとペアリングします。アプリに表示されたコードを渡すか、コードなしで実行してアプリに入力するコードを取得します"
+    about: "このコンピュータをスマートフォンとペアリングします。アプリに表示されたコードを渡します。コードなしで実行するとコードの入力を求められ、何も入力せずに Enter を押すと、代わりにスキャン用の QR コードが表示されます"
     code: "Notifier for Codex アプリに表示される6桁のコード"
     name: "スマートフォン上でのこのコンピュータの名前（デフォルト: ホスト名）"
     no_wait: "QR コードを表示してすぐ戻ります。スマートフォンが接続するとペアリングは自動で完了します"
@@ -203,6 +203,15 @@ cross_promo:
   notification: "Claude Code を検出しました。Claude Code Notifier アプリで、Claude Code の承認もスマートフォンに届きます。"
   # After `codex-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
   pair_title: "Claude Code を検出しました。Claude Code Notifier アプリ（iPhone・Android）で、Claude Code の承認や質問もスマートフォンに届きます。"
+  pair_scan: "スキャンしてアプリを入手し、このコンピュータをコマンド 1 つで設定してください:"
+  pair_steps: "アプリを入手し、このコンピュータをコマンド 1 つで設定してください:"
+
+# The same for Antigravity Notifier, to someone with Google Antigravity (`agy`) and not antigravity-notifier.
+# Its phone apps may not be in the stores yet: the QR code and links open antigravitynotifier.com, never a store.
+cross_promo_antigravity:
+  line: "Antigravity を検出しました。Antigravity Notifier アプリ（iPhone・Android）で、Antigravity の承認や質問もスマートフォンに届きます。このコンピュータはコマンド 1 つで設定できます: %{command}  ·  %{url}"
+  notification: "Antigravity を検出しました。Antigravity Notifier アプリで、Antigravity の承認もスマートフォンに届きます。"
+  pair_title: "Antigravity を検出しました。Antigravity Notifier アプリ（iPhone・Android）で、Antigravity の承認や質問もスマートフォンに届きます。"
   pair_scan: "スキャンしてアプリを入手し、このコンピュータをコマンド 1 つで設定してください:"
   pair_steps: "アプリを入手し、このコンピュータをコマンド 1 つで設定してください:"
 

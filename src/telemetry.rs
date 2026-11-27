@@ -23,8 +23,8 @@ fn enabled() -> bool {
     !set("CODEX_NOTIFIER_NO_ANALYTICS") && !set("DO_NOT_TRACK")
 }
 
-/// How this binary got here: the install script tells it, npx sets CODEX_NOTIFIER_EPHEMERAL, Homebrew
-/// and npm from where the binary really lives.
+/// How this binary got here: the install script tells it, npx sets CODEX_NOTIFIER_EPHEMERAL, Homebrew,
+/// npm and Scoop from where the binary really lives.
 pub fn install_method() -> &'static str {
     if let Ok(method) = std::env::var("CODEX_NOTIFIER_INSTALL_METHOD") {
         match method.as_str() {

@@ -323,7 +323,7 @@ pub struct Config {
     pub auto_update: bool,
     /// When the daily check last started a background `codex-notifier upgrade`
     pub update_checked_at: Option<i64>,
-    /// A newer version the background check found but could not install (Homebrew or npm
+    /// A newer version the background check found but could not install (Homebrew, npm or Scoop
     /// owns the binary); the SessionStart hook mentions it once a week
     pub update_available: Option<String>,
     /// When `update_available` was last mentioned in Codex
@@ -331,14 +331,15 @@ pub struct Config {
     /// Hold Codex for the phone even where presence can't be detected (`codex-notifier config set
     /// hold_without_presence on`; default off, since typing can't then release the hold)
     pub hold_without_presence: bool,
-    /// Whether to mention ccn, the Claude Code notifier, to someone who also uses Claude Code
-    /// (`codex-notifier config set cross_promo off`; default on). Its cadence is in crosspromo.rs.
+    /// Whether to mention a sister app to someone who also uses its agent: ccn for Claude Code,
+    /// antigravity-notifier for Google Antigravity (`codex-notifier config set cross_promo off`;
+    /// default on). Its cadence is in crosspromo.rs; the three fields below count both together.
     pub cross_promo: bool,
-    /// When the ccn suggestion was last shown in Codex at SessionStart
+    /// When the suggestion was last shown in Codex at SessionStart
     pub cross_promo_last_at: Option<i64>,
-    /// How many times SessionStart has shown the ccn suggestion (it stops at two)
+    /// How many times SessionStart has shown the suggestion (it stops at two)
     pub cross_promo_count: u32,
-    /// When a SessionStart first looked at the ccn suggestion, for a computer with no pairing time
+    /// When a SessionStart first looked at the suggestion, for a computer with no pairing time
     pub cross_promo_first_seen_at: Option<i64>,
     /// Requests and done cards answered from the phone while Codex waited (for `rate_prompt`)
     pub phone_answers: u64,

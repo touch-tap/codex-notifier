@@ -40,10 +40,12 @@ install-source tracking.
 ```sh
 cargo build --release
 ./target/release/codex-notifier pair 482913     # the code the phone app shows
-./target/release/codex-notifier                 # or show a QR code here
+./target/release/codex-notifier                 # or be asked for that code; Enter shows a QR code to scan
 ```
 
-`codex-notifier` on its own pairs a computer that isn't paired yet. Once paired, the phone gets a
+`codex-notifier` on its own pairs a computer that isn't paired yet: in a terminal it asks for the
+6-digit code the app shows, and pressing Enter without one shows a QR code to scan instead (where
+nothing can be typed, and with `--no-wait`, it shows the QR code straight away). Once paired, the phone gets a
 test notification it can answer, and `codex-notifier` shows the answer.
 
 ## What you get
@@ -90,7 +92,7 @@ marked secret (`isSecret`) never go to the phone.
 
 ```
 codex-notifier                     pair if this computer isn't paired yet, otherwise show its status
-codex-notifier pair [CODE]         pair with a phone (installs the hooks); without a code, shows a QR code
+codex-notifier pair [CODE]         pair with a phone (installs the hooks); without a code, asks for it (Enter: a QR code)
 codex-notifier doctor              check hooks, trust, credentials, server, presence detection
 codex-notifier test                send a test notification
 codex-notifier devices             list paired phones; codex-notifier devices revoke <name>
@@ -115,7 +117,11 @@ the local-only `desktop_notifications`, `credential_store` (`keychain` or `file`
 `cross_promo` (default on: someone who also uses Claude Code, without
 [ccn](https://claudecodenotifier.com) installed, hears about the Claude Code Notifier app and its
 one-line install after every pairing, with a QR code for the app, then as one line in `status`
-and `doctor`, and at most twice ever when Codex starts, as a desktop notification and a line in Codex; `CODEX_NOTIFIER_NO_NUDGE=1` also turns it off), and `rate_prompt` (default on: once per install,
+and `doctor`, and at most twice ever when Codex starts, as a desktop notification and a line in Codex.
+Someone who uses Google Antigravity (`agy` on the PATH, or Antigravity's folders in `~/.gemini`)
+without [antigravity-notifier](https://antigravitynotifier.com) hears about Antigravity Notifier
+the same way, with links to its website; only one of the two is ever suggested at a time, Claude
+Code Notifier first, and the two share the limit of twice. `CODEX_NOTIFIER_NO_NUDGE=1` also turns it off), and `rate_prompt` (default on: once per install,
 after 20 answers from the phone, a desktop notification asks for an app-store rating).
 
 ## Files
@@ -133,7 +139,7 @@ after 20 answers from the phone, a desktop notification asks for an app-store ra
 started, paired or failed with a short reason; how and from where it was installed; the OS and
 processor; `agent: codex`). The background updater sends `cli_updated` or `cli_update_failed`, and
 the one hook that sends anything is SessionStart, when it shows a licence nudge (at most once a
-day) or the ccn suggestion or rating request (`cli_cross_promo_shown`, `cli_rate_prompt_shown`, sent by a detached process so nothing waits). Nothing about your sessions, prompts or computer name is included. Set
+day) or the ccn or antigravity-notifier suggestion or rating request (`cli_cross_promo_shown`, which says which app was named, and `cli_rate_prompt_shown`, sent by a detached process so nothing waits). Nothing about your sessions, prompts or computer name is included. Set
 `CODEX_NOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` to turn them off.
 
 ## Development

@@ -5,7 +5,7 @@ _version: 1
 cli:
   about: "Notifier for Codex: Codex가 당신을 필요로 할 때 휴대폰으로 푸시 알림을 받고, 거기서 바로 답해요"
   pair:
-    about: "이 컴퓨터를 휴대폰과 연결해요. 앱에 표시된 코드를 넘기거나, 코드 없이 실행해 앱에 입력할 코드를 받으세요"
+    about: "이 컴퓨터를 휴대폰과 연결해요. 앱에 표시된 코드를 넘기세요. 코드 없이 실행하면 코드를 물어보고, 입력하지 않고 Enter를 누르면 스캔할 QR 코드가 대신 표시돼요"
     code: "Notifier for Codex 앱에 표시된 6자리 코드"
     name: "휴대폰에 표시되는 이 컴퓨터의 이름 (기본값: 호스트 이름)"
     no_wait: "QR 코드를 표시하고 바로 돌아와요. 휴대폰이 연결되면 알아서 완료돼요"
@@ -203,6 +203,15 @@ cross_promo:
   notification: "Claude Code가 감지되었습니다. Claude Code Notifier 앱으로 Claude Code의 승인 요청도 휴대폰으로 받으세요."
   # After `codex-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
   pair_title: "Claude Code가 감지되었습니다. Claude Code Notifier 앱(iPhone, Android)으로 Claude Code의 승인 요청과 질문도 휴대폰으로 받으세요."
+  pair_scan: "스캔해서 앱을 받은 다음, 명령 하나로 이 컴퓨터를 설정하세요:"
+  pair_steps: "앱을 받은 다음, 명령 하나로 이 컴퓨터를 설정하세요:"
+
+# The same for Antigravity Notifier, to someone with Google Antigravity (`agy`) and not antigravity-notifier.
+# Its phone apps may not be in the stores yet: the QR code and links open antigravitynotifier.com, never a store.
+cross_promo_antigravity:
+  line: "Antigravity가 감지되었습니다. Antigravity Notifier 앱(iPhone, Android)으로 Antigravity의 승인 요청과 질문도 휴대폰으로 받으세요. 이 컴퓨터는 명령 하나로 설정됩니다: %{command}  ·  %{url}"
+  notification: "Antigravity가 감지되었습니다. Antigravity Notifier 앱으로 Antigravity의 승인 요청도 휴대폰으로 받으세요."
+  pair_title: "Antigravity가 감지되었습니다. Antigravity Notifier 앱(iPhone, Android)으로 Antigravity의 승인 요청과 질문도 휴대폰으로 받으세요."
   pair_scan: "스캔해서 앱을 받은 다음, 명령 하나로 이 컴퓨터를 설정하세요:"
   pair_steps: "앱을 받은 다음, 명령 하나로 이 컴퓨터를 설정하세요:"
 

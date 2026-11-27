@@ -1,5 +1,5 @@
 //! `codex-notifier upgrade`: replaces this binary with the latest release, or says how to update when a
-//! package manager owns it (Homebrew, npm). Also the once-a-day check behind it.
+//! package manager owns it (Homebrew, npm, Scoop). Also the once-a-day check behind it.
 //!
 //! Wiring for the SessionStart hook (hook.rs): call `update::daily_check(&mut self.cfg)` once per
 //! SessionStart, after the config is loaded. It returns within ~100 ms and never touches the
@@ -385,39 +385,140 @@ fn spawn_background() {
 
 /// Runs this same binary with `args`, with no terminal, no standard streams and its own session,
 /// so neither Codex nor the shell waits for it or stops it.
+///
+/// "No standard streams" has to hold for every handle, not just the three the child is given.
+/// Whatever runs the hook and reads its output (Codex, a wrapper script, a test) reads to
+/// end-of-file, and a pipe only ends when the last process holding its write end lets go. A child
+/// that kept the hook's stdout would hold that reader up for as long as it lived: the length of
+/// an update check or a download.
+#[cfg(unix)]
 pub fn spawn_detached(args: &[&str]) -> std::io::Result<()> {
+    use std::os::unix::process::CommandExt;
     let exe = std::env::current_exe()?;
     let mut command = Command::new(exe);
+    // The three streams are replaced by /dev/null, and those are the only descriptors the hook
+    // was handed: everything it opens itself is close-on-exec
     command
         .args(args)
         .stdin(Stdio::null())
         .stdout(Stdio::null())
         .stderr(Stdio::null());
-    #[cfg(unix)]
-    {
-        use std::os::unix::process::CommandExt;
-        // SAFETY: setsid only touches this child's own session and process group
-        unsafe {
-            command.pre_exec(|| {
-                libc::setsid();
-                Ok(())
-            });
-        }
-    }
-    #[cfg(windows)]
-    {
-        use std::os::windows::process::CommandExt;
-        use windows_sys::Win32::System::Threading::{CREATE_NO_WINDOW, DETACHED_PROCESS};
-        command.creation_flags(CREATE_NO_WINDOW | DETACHED_PROCESS);
+    // SAFETY: setsid only touches this child's own session and process group
+    unsafe {
+        command.pre_exec(|| {
+            libc::setsid();
+            Ok(())
+        });
     }
     command.spawn().map(|_| ())
+}
+
+/// As above. `std::process::Command` can't do this on Windows: it always creates the child with
+/// handle inheritance on, so the child receives every inheritable handle this process has,
+/// whatever its own three streams are set to. The hook's stdout and stderr are inheritable (that
+/// is how the hook got them), so a child started that way keeps Codex's pipes open. Here the
+/// process is created with inheritance off and no standard handles at all.
+#[cfg(windows)]
+pub fn spawn_detached(args: &[&str]) -> std::io::Result<()> {
+    use std::os::windows::ffi::OsStrExt;
+    use windows_sys::Win32::Foundation::CloseHandle;
+    use windows_sys::Win32::System::Threading::{
+        CREATE_NEW_PROCESS_GROUP, CREATE_NO_WINDOW, CreateProcessW, DETACHED_PROCESS,
+        PROCESS_INFORMATION, STARTF_USESTDHANDLES, STARTUPINFOW,
+    };
+
+    let exe = std::env::current_exe()?;
+    let exe_text = exe.to_string_lossy();
+    let mut application: Vec<u16> = exe.as_os_str().encode_wide().collect();
+    if application.contains(&0) {
+        return Err(std::io::Error::from(std::io::ErrorKind::InvalidInput));
+    }
+    application.push(0);
+    let mut parts = vec![exe_text.as_ref()];
+    parts.extend_from_slice(args);
+    // CreateProcessW may write to the command line, so it is a buffer of our own
+    let mut command_line: Vec<u16> = windows_command_line(&parts).encode_utf16().collect();
+    command_line.push(0);
+
+    // SAFETY: both structs are plain data for which all-zero is the documented empty value
+    let mut startup: STARTUPINFOW = unsafe { std::mem::zeroed() };
+    startup.cb = std::mem::size_of::<STARTUPINFOW>() as u32;
+    // Standard handles named and left empty, so the child has none rather than the numbers of
+    // ours (which, uninherited, would mean nothing or something else in the child)
+    startup.dwFlags = STARTF_USESTDHANDLES;
+    let mut info: PROCESS_INFORMATION = unsafe { std::mem::zeroed() };
+    // SAFETY: every pointer is to a NUL-terminated buffer or a struct that outlives the call;
+    // the null ones are optional and mean "as this process"
+    let created = unsafe {
+        CreateProcessW(
+            application.as_ptr(),
+            command_line.as_mut_ptr(),
+            std::ptr::null(),
+            std::ptr::null(),
+            0, // no handle of ours goes to the child
+            DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
+            std::ptr::null(),
+            std::ptr::null(),
+            &startup,
+            &mut info,
+        )
+    };
+    if created == 0 {
+        return Err(std::io::Error::last_os_error());
+    }
+    // SAFETY: both handles were just returned to us and are closed once; the child runs on
+    unsafe {
+        CloseHandle(info.hThread);
+        CloseHandle(info.hProcess);
+    }
+    Ok(())
+}
+
+/// A Windows command line that the C runtime's parser (which Rust's `std::env::args` follows)
+/// splits back into exactly `parts`.
+#[cfg_attr(not(windows), allow(dead_code))]
+fn windows_command_line(parts: &[&str]) -> String {
+    let mut line = String::new();
+    for (index, part) in parts.iter().enumerate() {
+        if index > 0 {
+            line.push(' ');
+        }
+        let plain = !part.is_empty() && !part.contains([' ', '\t', '\n', '\u{b}', '"']);
+        if plain {
+            line.push_str(part);
+            continue;
+        }
+        line.push('"');
+        let mut backslashes = 0;
+        for c in part.chars() {
+            match c {
+                '\\' => backslashes += 1,
+                '"' => {
+                    // Backslashes before a quote are doubled, and the quote escaped
+                    line.extend(std::iter::repeat_n('\\', backslashes * 2 + 1));
+                    backslashes = 0;
+                }
+                _ => {
+                    line.extend(std::iter::repeat_n('\\', backslashes));
+                    backslashes = 0;
+                }
+            }
+            if c != '\\' {
+                line.push(c);
+            }
+        }
+        // Backslashes before the closing quote are doubled, so it still closes
+        line.extend(std::iter::repeat_n('\\', backslashes * 2));
+        line.push('"');
+    }
+    line
 }
 
 // ============================================
 // Where the binary came from, and what that allows
 // ============================================
 
-/// "homebrew" or "npm" from the binary's path; otherwise what the install
+/// "homebrew", "npm" or "scoop" from the binary's path; otherwise what the install
 /// scripts and npx told telemetry ("script", "powershell", "npx") or "other".
 ///
 /// Decided from the resolved path: `hookcfg::exe_path` maps a Cellar binary back to brew's link,
@@ -427,7 +528,8 @@ fn detect_method(exe: &Path) -> &'static str {
     method_from_path_resolved(exe).unwrap_or_else(telemetry::install_method)
 }
 
-/// The method from where `exe` really is (following brew's links), falling back to the path as given when it cannot be resolved.
+/// The method from where `exe` really is (following brew's links and Scoop's `current`
+/// junction), falling back to the path as given when it cannot be resolved.
 pub(crate) fn method_from_path_resolved(exe: &Path) -> Option<&'static str> {
     exe.canonicalize()
         .ok()
@@ -437,12 +539,17 @@ pub(crate) fn method_from_path_resolved(exe: &Path) -> Option<&'static str> {
 
 fn method_from_path(exe: &Path) -> Option<&'static str> {
     let path = exe.to_string_lossy().replace('\\', "/");
+    let lower = path.to_ascii_lowercase();
     // `/Cellar/codex-notifier/` under any prefix: /opt/homebrew, /usr/local, ~/.linuxbrew or a custom one
     if path.contains("/Cellar/codex-notifier/")
         || path.contains("/homebrew/")
         || path.contains("linuxbrew")
     {
         Some("homebrew")
+    } else if lower.contains("/scoop/apps/codex-notifier/") {
+        // Scoop's own copy, under `current` or the version's folder: replacing it in place would
+        // leave Scoop believing in a version that is no longer there
+        Some("scoop")
     } else if path.contains("node_modules") {
         Some("npm")
     } else {
@@ -455,6 +562,7 @@ pub fn action_for(method: &str, exe: &Path) -> Action {
     match method {
         "homebrew" => Action::Run("brew upgrade touch-tap/tap/codex-notifier"),
         "npm" => Action::Run("npm install -g @touchtap/codex-notifier@latest"),
+        "scoop" => Action::Run("scoop update codex-notifier"),
         _ => Action::Replace(exe.to_path_buf()),
     }
 }
@@ -970,6 +1078,24 @@ mod tests {
     use super::*;
 
     #[test]
+    fn a_windows_command_line_splits_back_into_its_parts() {
+        assert_eq!(
+            windows_command_line(&[r"C:\bin\cxn.exe", "telemetry", "cli_updated", "from=0.1.0"]),
+            r"C:\bin\cxn.exe telemetry cli_updated from=0.1.0"
+        );
+        // A path with a space is quoted; its backslashes are left alone
+        assert_eq!(
+            windows_command_line(&[r"C:\Users\Ada Byron\bin\cxn.exe", "upgrade", "--quiet"]),
+            r#""C:\Users\Ada Byron\bin\cxn.exe" upgrade --quiet"#
+        );
+        // An empty argument still counts as one; a trailing backslash must not swallow the quote
+        assert_eq!(windows_command_line(&["a", "", r"b c\"]), r#"a "" "b c\\""#);
+        // Quotes are escaped, and backslashes before them doubled
+        assert_eq!(windows_command_line(&[r#"say "hi""#]), r#""say \"hi\"""#);
+        assert_eq!(windows_command_line(&[r#"a\"b"#]), r#""a\\\"b""#);
+    }
+
+    #[test]
     fn versions_compare_as_semver() {
         assert!(is_newer("0.3.0", "0.2.0"));
         assert!(is_newer("v0.3.0", "0.2.9"));
@@ -1081,6 +1207,13 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
             method_from_path(&p("/Users/jack/.local/bin/codex-notifier")),
             None
         );
+        for scoop in [
+            r"C:\Users\jack\scoop\apps\codex-notifier\current\codex-notifier.exe",
+            r"C:\Users\jack\scoop\apps\codex-notifier\0.1.7\codex-notifier.exe",
+            r"D:\Scoop\Apps\codex-notifier\current\codex-notifier.exe",
+        ] {
+            assert_eq!(method_from_path(&p(scoop)), Some("scoop"), "{scoop}");
+        }
         assert_eq!(
             method_from_path(&p(
                 r"C:\Users\jack\AppData\Local\Programs\codex-notifier\codex-notifier.exe"
@@ -1097,7 +1230,11 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
             action_for("npm", &exe),
             Action::Run("npm install -g @touchtap/codex-notifier@latest")
         );
-        // Scoop and winget have no codex-notifier package (yet), so nothing detects them
+        assert_eq!(
+            action_for("scoop", &exe),
+            Action::Run("scoop update codex-notifier")
+        );
+        // winget has no codex-notifier package yet (never accepted), so nothing detects it
         for method in ["script", "powershell", "npx", "other"] {
             assert_eq!(action_for(method, &exe), Action::Replace(exe.clone()));
         }

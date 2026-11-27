@@ -169,9 +169,9 @@ fn run_inner() -> Result<Option<Value>> {
         Some(message) => Some(message),
         None => result?.or(update_message),
     };
-    // The ccn suggestion only on a SessionStart that says nothing else: never with a licence
-    // nudge, a "paired with" or an update notice. Never through codex_wording, which would
-    // turn its "Claude Code" into "Codex".
+    // The suggestion of a sister app (ccn, or antigravity-notifier) only on a SessionStart that
+    // says nothing else: never with a licence nudge, a "paired with" or an update notice. Never
+    // through codex_wording, which would turn its "Claude Code" into "Codex".
     // Then the rating request, the same way.
     if message.is_none() && event == "SessionStart" {
         let now = config::now();
@@ -759,14 +759,15 @@ mod tests {
     #[test]
     fn codex_wording_never_touches_the_ccn_suggestion() {
         // codex_wording would turn the line into nonsense about Codex...
-        let line = crate::crosspromo::line();
+        let sister = crate::crosspromo::Sister::ClaudeCode;
+        let line = sister.line();
         let rewritten = codex_wording(api::NudgeMessage {
             id: String::new(),
             kind: String::new(),
             variant: String::new(),
             title: String::new(),
             body: line.clone(),
-            command: crate::crosspromo::command().into(),
+            command: sister.command().into(),
         });
         assert_ne!(rewritten.body, line);
         // ...so the SessionStart message is the line as written, naming Claude Code and ccn
@@ -777,14 +778,18 @@ mod tests {
         let places = crate::crosspromo::Places {
             claude_dir: dir.join(".claude"),
             ccn_dir: dir.join("ccn"),
+            gemini_dir: dir.join(".gemini"),
+            antigravity_notifier_dir: dir.join("antigravity-notifier"),
             path: None,
         };
         let mut cfg = Config::default();
         cfg.paired_at = Some(0);
-        let shown = crate::crosspromo::session_line(&mut cfg, 10 * DAY, &places).unwrap();
+        let (named, shown) =
+            crate::crosspromo::session_line(&mut cfg, 10 * DAY, &places).unwrap();
+        assert_eq!(named, sister);
         assert_eq!(shown, line);
         assert!(shown.contains("Claude Code approvals"), "{shown}");
-        assert!(shown.contains(crate::crosspromo::command()), "{shown}");
+        assert!(shown.contains(sister.command()), "{shown}");
         assert!(!shown.contains("Codex"), "{shown}");
     }
 

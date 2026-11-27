@@ -7,7 +7,7 @@ _version: 1
 cli:
   about: "Notifier for Codex: nhận thông báo trên điện thoại khi Codex cần bạn, và trả lời ngay từ đó"
   pair:
-    about: "Ghép nối máy tính này với điện thoại của bạn. Truyền mã mà ứng dụng hiển thị, hoặc chạy không kèm mã để nhận một mã rồi nhập vào ứng dụng"
+    about: "Ghép nối máy tính này với điện thoại của bạn. Truyền mã mà ứng dụng hiển thị; nếu chạy không kèm mã, lệnh sẽ hỏi mã đó, và nhấn Enter mà không nhập gì sẽ hiện mã QR để bạn quét"
     code: "Mã 6 chữ số hiển thị trong ứng dụng Notifier for Codex"
     name: "Tên của máy tính này trên điện thoại của bạn (mặc định: hostname)"
     no_wait: "Hiển thị mã QR rồi thoát ngay: việc ghép nối tự hoàn tất khi điện thoại kết nối"
@@ -204,6 +204,15 @@ cross_promo:
   notification: "Đã phát hiện Claude Code — nhận cả yêu cầu phê duyệt của Claude Code trên điện thoại, với ứng dụng Claude Code Notifier."
   # After `codex-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
   pair_title: "Đã phát hiện Claude Code — nhận cả yêu cầu phê duyệt và câu hỏi của Claude Code trên điện thoại, với ứng dụng Claude Code Notifier (iPhone và Android)."
+  pair_scan: "Quét để tải ứng dụng, rồi thiết lập máy tính này bằng một lệnh:"
+  pair_steps: "Tải ứng dụng, rồi thiết lập máy tính này bằng một lệnh:"
+
+# The same for Antigravity Notifier, to someone with Google Antigravity (`agy`) and not antigravity-notifier.
+# Its phone apps may not be in the stores yet: the QR code and links open antigravitynotifier.com, never a store.
+cross_promo_antigravity:
+  line: "Đã phát hiện Antigravity — nhận cả yêu cầu phê duyệt và câu hỏi của Antigravity trên điện thoại, với ứng dụng Antigravity Notifier (iPhone và Android). Thiết lập máy tính này bằng một lệnh: %{command}  ·  %{url}"
+  notification: "Đã phát hiện Antigravity — nhận cả yêu cầu phê duyệt của Antigravity trên điện thoại, với ứng dụng Antigravity Notifier."
+  pair_title: "Đã phát hiện Antigravity — nhận cả yêu cầu phê duyệt và câu hỏi của Antigravity trên điện thoại, với ứng dụng Antigravity Notifier (iPhone và Android)."
   pair_scan: "Quét để tải ứng dụng, rồi thiết lập máy tính này bằng một lệnh:"
   pair_steps: "Tải ứng dụng, rồi thiết lập máy tính này bằng một lệnh:"
 

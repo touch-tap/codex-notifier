@@ -4,7 +4,7 @@ _version: 1
 cli:
   about: "Notifier for Codex: получайте push на телефон, когда вы нужны Codex, и отвечайте оттуда"
   pair:
-    about: "Подключить этот компьютер к телефону. Укажите код из приложения или запустите без кода, чтобы получить код для ввода в приложении"
+    about: "Подключить этот компьютер к телефону. Укажите код из приложения; без кода команда спросит его, а если нажать Enter, ничего не вводя, покажет QR-код для сканирования"
     code: "6-значный код, который показывает приложение Notifier for Codex"
     name: "Как этот компьютер называется на телефоне (по умолчанию: имя хоста)"
     no_wait: "Показать QR-код и сразу выйти: подключение завершится само, когда телефон подключится"
@@ -201,6 +201,15 @@ cross_promo:
   notification: "Найден Claude Code — получайте на телефон и подтверждения от Claude Code в приложении Claude Code Notifier."
   # After `codex-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
   pair_title: "Найден Claude Code — получайте на телефон и подтверждения, и вопросы от Claude Code в приложении Claude Code Notifier (iPhone и Android)."
+  pair_scan: "Отсканируйте код, чтобы установить приложение, затем настройте этот компьютер одной командой:"
+  pair_steps: "Установите приложение, затем настройте этот компьютер одной командой:"
+
+# The same for Antigravity Notifier, to someone with Google Antigravity (`agy`) and not antigravity-notifier.
+# Its phone apps may not be in the stores yet: the QR code and links open antigravitynotifier.com, never a store.
+cross_promo_antigravity:
+  line: "Найден Antigravity — получайте на телефон и подтверждения, и вопросы от Antigravity в приложении Antigravity Notifier (iPhone и Android). Этот компьютер настраивается одной командой: %{command}  ·  %{url}"
+  notification: "Найден Antigravity — получайте на телефон и подтверждения от Antigravity в приложении Antigravity Notifier."
+  pair_title: "Найден Antigravity — получайте на телефон и подтверждения, и вопросы от Antigravity в приложении Antigravity Notifier (iPhone и Android)."
   pair_scan: "Отсканируйте код, чтобы установить приложение, затем настройте этот компьютер одной командой:"
   pair_steps: "Установите приложение, затем настройте этот компьютер одной командой:"
 

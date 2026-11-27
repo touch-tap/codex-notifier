@@ -5,7 +5,7 @@ _version: 1
 cli:
   about: "Notifier for Codex: ricevi una notifica sul telefono quando Codex ha bisogno di te e rispondi da lì"
   pair:
-    about: "Abbinare questo computer al tuo telefono. Passa il codice mostrato dall'app, oppure esegui senza codice per averne uno da digitare nell'app"
+    about: "Abbinare questo computer al tuo telefono. Passa il codice mostrato dall'app; senza codice te lo chiede, e premendo Invio senza digitarlo mostra invece un codice QR da scansionare"
     code: "Il codice a 6 cifre mostrato nell'app Notifier for Codex"
     name: "Il nome di questo computer sul tuo telefono (predefinito: l'hostname)"
     no_wait: "Mostrare il codice QR e uscire subito: l'abbinamento si completa da solo quando il telefono si collega"
@@ -202,6 +202,15 @@ cross_promo:
   notification: "Claude Code rilevato: ricevi anche sul telefono le approvazioni di Claude Code, con l'app Claude Code Notifier."
   # After `codex-notifier pair`, above a QR code (pair_scan) or without one (pair_steps), the app's link and the command
   pair_title: "Claude Code rilevato: ricevi anche sul telefono le approvazioni e le domande di Claude Code, con l'app Claude Code Notifier (iPhone e Android)."
+  pair_scan: "Scansiona per scaricare l'app, poi configura questo computer con un solo comando:"
+  pair_steps: "Scarica l'app, poi configura questo computer con un solo comando:"
+
+# The same for Antigravity Notifier, to someone with Google Antigravity (`agy`) and not antigravity-notifier.
+# Its phone apps may not be in the stores yet: the QR code and links open antigravitynotifier.com, never a store.
+cross_promo_antigravity:
+  line: "Antigravity rilevato: ricevi anche sul telefono le approvazioni e le domande di Antigravity, con l'app Antigravity Notifier (iPhone e Android). Configura questo computer con un solo comando: %{command}  ·  %{url}"
+  notification: "Antigravity rilevato: ricevi anche sul telefono le approvazioni di Antigravity, con l'app Antigravity Notifier."
+  pair_title: "Antigravity rilevato: ricevi anche sul telefono le approvazioni e le domande di Antigravity, con l'app Antigravity Notifier (iPhone e Android)."
   pair_scan: "Scansiona per scaricare l'app, poi configura questo computer con un solo comando:"
   pair_steps: "Scarica l'app, poi configura questo computer con un solo comando:"
 
