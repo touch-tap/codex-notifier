@@ -1,5 +1,5 @@
 //! `codex-notifier upgrade`: replaces this binary with the latest release, or says how to update when a
-//! package manager owns it (Homebrew, npm). Also the once-a-day check behind it.
+//! package manager owns it (Homebrew, npm, Scoop). Also the once-a-day check behind it.
 //!
 //! Wiring for the SessionStart hook (hook.rs): call `update::daily_check(&mut self.cfg)` once per
 //! SessionStart, after the config is loaded. It returns within ~100 ms and never touches the
@@ -518,7 +518,7 @@ fn windows_command_line(parts: &[&str]) -> String {
 // Where the binary came from, and what that allows
 // ============================================
 
-/// "homebrew" or "npm" from the binary's path; otherwise what the install
+/// "homebrew", "npm" or "scoop" from the binary's path; otherwise what the install
 /// scripts and npx told telemetry ("script", "powershell", "npx") or "other".
 ///
 /// Decided from the resolved path: `hookcfg::exe_path` maps a Cellar binary back to brew's link,
@@ -528,7 +528,8 @@ fn detect_method(exe: &Path) -> &'static str {
     method_from_path_resolved(exe).unwrap_or_else(telemetry::install_method)
 }
 
-/// The method from where `exe` really is (following brew's links), falling back to the path as given when it cannot be resolved.
+/// The method from where `exe` really is (following brew's links and Scoop's `current`
+/// junction), falling back to the path as given when it cannot be resolved.
 pub(crate) fn method_from_path_resolved(exe: &Path) -> Option<&'static str> {
     exe.canonicalize()
         .ok()
@@ -538,12 +539,17 @@ pub(crate) fn method_from_path_resolved(exe: &Path) -> Option<&'static str> {
 
 fn method_from_path(exe: &Path) -> Option<&'static str> {
     let path = exe.to_string_lossy().replace('\\', "/");
+    let lower = path.to_ascii_lowercase();
     // `/Cellar/codex-notifier/` under any prefix: /opt/homebrew, /usr/local, ~/.linuxbrew or a custom one
     if path.contains("/Cellar/codex-notifier/")
         || path.contains("/homebrew/")
         || path.contains("linuxbrew")
     {
         Some("homebrew")
+    } else if lower.contains("/scoop/apps/codex-notifier/") {
+        // Scoop's own copy, under `current` or the version's folder: replacing it in place would
+        // leave Scoop believing in a version that is no longer there
+        Some("scoop")
     } else if path.contains("node_modules") {
         Some("npm")
     } else {
@@ -556,6 +562,7 @@ pub fn action_for(method: &str, exe: &Path) -> Action {
     match method {
         "homebrew" => Action::Run("brew upgrade touch-tap/tap/codex-notifier"),
         "npm" => Action::Run("npm install -g @touchtap/codex-notifier@latest"),
+        "scoop" => Action::Run("scoop update codex-notifier"),
         _ => Action::Replace(exe.to_path_buf()),
     }
 }
@@ -1200,6 +1207,13 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
             method_from_path(&p("/Users/jack/.local/bin/codex-notifier")),
             None
         );
+        for scoop in [
+            r"C:\Users\jack\scoop\apps\codex-notifier\current\codex-notifier.exe",
+            r"C:\Users\jack\scoop\apps\codex-notifier\0.1.7\codex-notifier.exe",
+            r"D:\Scoop\Apps\codex-notifier\current\codex-notifier.exe",
+        ] {
+            assert_eq!(method_from_path(&p(scoop)), Some("scoop"), "{scoop}");
+        }
         assert_eq!(
             method_from_path(&p(
                 r"C:\Users\jack\AppData\Local\Programs\codex-notifier\codex-notifier.exe"
@@ -1216,7 +1230,11 @@ deadbeef  codex-notifier-x86_64-apple-darwin.tar.gz
             action_for("npm", &exe),
             Action::Run("npm install -g @touchtap/codex-notifier@latest")
         );
-        // Scoop and winget have no codex-notifier package (yet), so nothing detects them
+        assert_eq!(
+            action_for("scoop", &exe),
+            Action::Run("scoop update codex-notifier")
+        );
+        // winget has no codex-notifier package yet (never accepted), so nothing detects it
         for method in ["script", "powershell", "npx", "other"] {
             assert_eq!(action_for(method, &exe), Action::Replace(exe.clone()));
         }

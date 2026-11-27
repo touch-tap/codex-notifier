@@ -323,7 +323,7 @@ pub struct Config {
     pub auto_update: bool,
     /// When the daily check last started a background `codex-notifier upgrade`
     pub update_checked_at: Option<i64>,
-    /// A newer version the background check found but could not install (Homebrew or npm
+    /// A newer version the background check found but could not install (Homebrew, npm or Scoop
     /// owns the binary); the SessionStart hook mentions it once a week
     pub update_available: Option<String>,
     /// When `update_available` was last mentioned in Codex
