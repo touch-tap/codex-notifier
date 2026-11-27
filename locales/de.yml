@@ -5,7 +5,7 @@ _version: 1
 cli:
   about: "Notifier for Codex: bekomme einen Push aufs Handy, wenn Codex dich braucht, und antworte von dort"
   pair:
-    about: "Diesen Computer mit deinem Handy koppeln. Gib den Code aus der App an, oder starte ohne Code und bekomme einen zum Eintippen in die App"
+    about: "Diesen Computer mit deinem Handy koppeln. Gib den Code aus der App an; ohne Code wird danach gefragt, und Enter ohne Eingabe zeigt stattdessen einen QR-Code zum Scannen"
     code: "Der 6-stellige Code aus der App Notifier for Codex"
     name: "Wie dieser Computer auf deinem Handy heißt (Standard: der Hostname)"
     no_wait: "QR-Code anzeigen und sofort zurückkehren: die Kopplung wird von selbst abgeschlossen, sobald das Handy sich verbindet"

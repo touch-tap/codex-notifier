@@ -6,7 +6,7 @@ _version: 1
 cli:
   about: "Notifier for Codex: recibe un aviso en el teléfono cuando Codex te necesite y responde desde ahí"
   pair:
-    about: "Vincular este ordenador con tu teléfono. Pasa el código que muestra la app, o ejecútalo sin código para obtener uno que escribir en la app"
+    about: "Vincular este ordenador con tu teléfono. Pasa el código que muestra la app; sin código, te lo pide, y si pulsas Enter sin escribirlo muestra un código QR para escanear"
     code: "El código de 6 dígitos que muestra la app Notifier for Codex"
     name: "Cómo se llama este ordenador en tu teléfono (por defecto: el nombre de host)"
     no_wait: "Mostrar el código QR y volver de inmediato: la vinculación se completa sola cuando el teléfono se conecta"

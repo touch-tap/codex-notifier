@@ -7,7 +7,7 @@ _version: 1
 cli:
   about: "Notifier for Codex: Codex size ihtiyaç duyduğunda telefonunuza bildirim alın ve oradan yanıtlayın"
   pair:
-    about: "Bu bilgisayarı telefonunuzla eşleyin. Uygulamanın gösterdiği kodu verin ya da kod olmadan çalıştırıp uygulamaya yazacağınız bir kod alın"
+    about: "Bu bilgisayarı telefonunuzla eşleyin. Uygulamanın gösterdiği kodu verin; kod olmadan çalıştırırsanız kodu sorar, kod yazmadan Enter'a basarsanız bunun yerine taranacak bir QR kodu gösterir"
     code: "Notifier for Codex uygulamasında gösterilen 6 haneli kod"
     name: "Bu bilgisayarın telefonunuzda görünen adı (varsayılan: ana makine adı)"
     no_wait: "QR kodunu gösterip hemen çık: telefon bağlandığında eşleme kendiliğinden tamamlanır"

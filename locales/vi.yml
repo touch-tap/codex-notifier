@@ -7,7 +7,7 @@ _version: 1
 cli:
   about: "Notifier for Codex: nhận thông báo trên điện thoại khi Codex cần bạn, và trả lời ngay từ đó"
   pair:
-    about: "Ghép nối máy tính này với điện thoại của bạn. Truyền mã mà ứng dụng hiển thị, hoặc chạy không kèm mã để nhận một mã rồi nhập vào ứng dụng"
+    about: "Ghép nối máy tính này với điện thoại của bạn. Truyền mã mà ứng dụng hiển thị; nếu chạy không kèm mã, lệnh sẽ hỏi mã đó, và nhấn Enter mà không nhập gì sẽ hiện mã QR để bạn quét"
     code: "Mã 6 chữ số hiển thị trong ứng dụng Notifier for Codex"
     name: "Tên của máy tính này trên điện thoại của bạn (mặc định: hostname)"
     no_wait: "Hiển thị mã QR rồi thoát ngay: việc ghép nối tự hoàn tất khi điện thoại kết nối"

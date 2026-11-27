@@ -40,10 +40,12 @@ install-source tracking.
 ```sh
 cargo build --release
 ./target/release/codex-notifier pair 482913     # the code the phone app shows
-./target/release/codex-notifier                 # or show a QR code here
+./target/release/codex-notifier                 # or be asked for that code; Enter shows a QR code to scan
 ```
 
-`codex-notifier` on its own pairs a computer that isn't paired yet. Once paired, the phone gets a
+`codex-notifier` on its own pairs a computer that isn't paired yet: in a terminal it asks for the
+6-digit code the app shows, and pressing Enter without one shows a QR code to scan instead (where
+nothing can be typed, and with `--no-wait`, it shows the QR code straight away). Once paired, the phone gets a
 test notification it can answer, and `codex-notifier` shows the answer.
 
 ## What you get
@@ -90,7 +92,7 @@ marked secret (`isSecret`) never go to the phone.
 
 ```
 codex-notifier                     pair if this computer isn't paired yet, otherwise show its status
-codex-notifier pair [CODE]         pair with a phone (installs the hooks); without a code, shows a QR code
+codex-notifier pair [CODE]         pair with a phone (installs the hooks); without a code, asks for it (Enter: a QR code)
 codex-notifier doctor              check hooks, trust, credentials, server, presence detection
 codex-notifier test                send a test notification
 codex-notifier devices             list paired phones; codex-notifier devices revoke <name>

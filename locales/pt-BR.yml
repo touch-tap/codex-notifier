@@ -4,7 +4,7 @@ _version: 1
 cli:
   about: "Notifier for Codex: receba um push no celular quando o Codex precisar de você e responda de lá"
   pair:
-    about: "Pareie este computador com seu celular. Passe o código que o app mostra, ou rode sem código para receber um e digitar no app"
+    about: "Pareie este computador com seu celular. Passe o código que o app mostra; sem código, ele pede o código, e pressionar Enter sem digitar mostra um código QR para escanear"
     code: "O código de 6 dígitos mostrado no app Notifier for Codex"
     name: "Como este computador aparece no seu celular (padrão: o hostname)"
     no_wait: "Mostre o QR code e saia na hora: o pareamento termina sozinho quando o celular se conecta"

@@ -5,7 +5,7 @@ _version: 1
 cli:
   about: "Notifier for Codex : reçois une notification sur ton téléphone quand Codex a besoin de toi, et réponds depuis là"
   pair:
-    about: "Jumeler cet ordinateur avec ton téléphone. Donne le code affiché par l'app, ou lance sans code pour en obtenir un à saisir dans l'app"
+    about: "Jumeler cet ordinateur avec ton téléphone. Donne le code affiché par l'app ; sans code, il te le demande, et Entrée sans rien saisir affiche plutôt un QR code à scanner"
     code: "Le code à 6 chiffres affiché dans l'app Notifier for Codex"
     name: "Le nom de cet ordinateur sur ton téléphone (par défaut : le nom d'hôte)"
     no_wait: "Afficher le QR code et rendre la main tout de suite : le jumelage se termine tout seul quand le téléphone se connecte"
