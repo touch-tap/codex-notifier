@@ -204,6 +204,15 @@ cross_promo:
   pair_scan: "Отсканируйте код, чтобы установить приложение, затем настройте этот компьютер одной командой:"
   pair_steps: "Установите приложение, затем настройте этот компьютер одной командой:"
 
+# The same for Antigravity Notifier, to someone with Google Antigravity (`agy`) and not antigravity-notifier.
+# Its phone apps may not be in the stores yet: the QR code and links open antigravitynotifier.com, never a store.
+cross_promo_antigravity:
+  line: "Найден Antigravity — получайте на телефон и подтверждения, и вопросы от Antigravity в приложении Antigravity Notifier (iPhone и Android). Этот компьютер настраивается одной командой: %{command}  ·  %{url}"
+  notification: "Найден Antigravity — получайте на телефон и подтверждения от Antigravity в приложении Antigravity Notifier."
+  pair_title: "Найден Antigravity — получайте на телефон и подтверждения, и вопросы от Antigravity в приложении Antigravity Notifier (iPhone и Android)."
+  pair_scan: "Отсканируйте код, чтобы установить приложение, затем настройте этот компьютер одной командой:"
+  pair_steps: "Установите приложение, затем настройте этот компьютер одной командой:"
+
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:
   notification: "Нравится Notifier for Codex? Короткая оценка поможет другим разработчикам его найти."

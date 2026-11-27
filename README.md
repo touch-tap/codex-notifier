@@ -115,7 +115,11 @@ the local-only `desktop_notifications`, `credential_store` (`keychain` or `file`
 `cross_promo` (default on: someone who also uses Claude Code, without
 [ccn](https://claudecodenotifier.com) installed, hears about the Claude Code Notifier app and its
 one-line install after every pairing, with a QR code for the app, then as one line in `status`
-and `doctor`, and at most twice ever when Codex starts, as a desktop notification and a line in Codex; `CODEX_NOTIFIER_NO_NUDGE=1` also turns it off), and `rate_prompt` (default on: once per install,
+and `doctor`, and at most twice ever when Codex starts, as a desktop notification and a line in Codex.
+Someone who uses Google Antigravity (`agy` on the PATH, or Antigravity's folders in `~/.gemini`)
+without [antigravity-notifier](https://antigravitynotifier.com) hears about Antigravity Notifier
+the same way, with links to its website; only one of the two is ever suggested at a time, Claude
+Code Notifier first, and the two share the limit of twice. `CODEX_NOTIFIER_NO_NUDGE=1` also turns it off), and `rate_prompt` (default on: once per install,
 after 20 answers from the phone, a desktop notification asks for an app-store rating).
 
 ## Files
@@ -133,7 +137,7 @@ after 20 answers from the phone, a desktop notification asks for an app-store ra
 started, paired or failed with a short reason; how and from where it was installed; the OS and
 processor; `agent: codex`). The background updater sends `cli_updated` or `cli_update_failed`, and
 the one hook that sends anything is SessionStart, when it shows a licence nudge (at most once a
-day) or the ccn suggestion or rating request (`cli_cross_promo_shown`, `cli_rate_prompt_shown`, sent by a detached process so nothing waits). Nothing about your sessions, prompts or computer name is included. Set
+day) or the ccn or antigravity-notifier suggestion or rating request (`cli_cross_promo_shown`, which says which app was named, and `cli_rate_prompt_shown`, sent by a detached process so nothing waits). Nothing about your sessions, prompts or computer name is included. Set
 `CODEX_NOTIFIER_NO_ANALYTICS=1` or `DO_NOT_TRACK=1` to turn them off.
 
 ## Development

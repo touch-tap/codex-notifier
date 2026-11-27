@@ -207,6 +207,15 @@ cross_promo:
   pair_scan: "Uygulamayı almak için tarayın, ardından bu bilgisayarı tek komutla kurun:"
   pair_steps: "Uygulamayı indirin, ardından bu bilgisayarı tek komutla kurun:"
 
+# The same for Antigravity Notifier, to someone with Google Antigravity (`agy`) and not antigravity-notifier.
+# Its phone apps may not be in the stores yet: the QR code and links open antigravitynotifier.com, never a store.
+cross_promo_antigravity:
+  line: "Antigravity bulundu: Antigravity Notifier uygulamasıyla (iPhone ve Android) Antigravity'nin onay isteklerini ve sorularını da telefonunuza alın. Bu bilgisayarı tek komutla kurun: %{command}  ·  %{url}"
+  notification: "Antigravity bulundu: Antigravity Notifier uygulamasıyla Antigravity'nin onay isteklerini de telefonunuza alın."
+  pair_title: "Antigravity bulundu: Antigravity Notifier uygulamasıyla (iPhone ve Android) Antigravity'nin onay isteklerini ve sorularını da telefonunuza alın."
+  pair_scan: "Uygulamayı almak için tarayın, ardından bu bilgisayarı tek komutla kurun:"
+  pair_steps: "Uygulamayı indirin, ardından bu bilgisayarı tek komutla kurun:"
+
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:
   notification: "Notifier for Codex'i beğendiniz mi? Kısa bir puan, diğer geliştiricilerin onu bulmasına yardımcı olur."

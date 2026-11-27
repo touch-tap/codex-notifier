@@ -206,6 +206,15 @@ cross_promo:
   pair_scan: "スキャンしてアプリを入手し、このコンピュータをコマンド 1 つで設定してください:"
   pair_steps: "アプリを入手し、このコンピュータをコマンド 1 つで設定してください:"
 
+# The same for Antigravity Notifier, to someone with Google Antigravity (`agy`) and not antigravity-notifier.
+# Its phone apps may not be in the stores yet: the QR code and links open antigravitynotifier.com, never a store.
+cross_promo_antigravity:
+  line: "Antigravity を検出しました。Antigravity Notifier アプリ（iPhone・Android）で、Antigravity の承認や質問もスマートフォンに届きます。このコンピュータはコマンド 1 つで設定できます: %{command}  ·  %{url}"
+  notification: "Antigravity を検出しました。Antigravity Notifier アプリで、Antigravity の承認もスマートフォンに届きます。"
+  pair_title: "Antigravity を検出しました。Antigravity Notifier アプリ（iPhone・Android）で、Antigravity の承認や質問もスマートフォンに届きます。"
+  pair_scan: "スキャンしてアプリを入手し、このコンピュータをコマンド 1 つで設定してください:"
+  pair_steps: "アプリを入手し、このコンピュータをコマンド 1 つで設定してください:"
+
 # Asks once, after 20 answers from the phone, for an app-store rating (rate.rs). url is not translated.
 rate:
   notification: "Notifier for Codex は気に入っていただけましたか？ 評価をいただけると、ほかの開発者が見つけやすくなります。"
